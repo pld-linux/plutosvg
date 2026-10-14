@@ -5,13 +5,13 @@
 Summary:	PlutoSVG - tiny SVG rendering library
 Summary(pl.UTF-8):	PlutoSVG - mała biblioteka do renderowania SVG
 Name:		plutosvg
-Version:	0.0.6
+Version:	0.0.8
 Release:	1
 License:	MIT
 Group:		Libraries
 #Source0Download: https://github.com/sammycage/plutosvg/releases
 Source0:	https://github.com/sammycage/plutosvg/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	3ebeae70224915e407a3815655477f0d
+# Source0-md5:	914d84a58c80343f51fbc4968a5710ee
 URL:		https://github.com/sammycage/plutosvg
 BuildRequires:	freetype-devel >= 1:2.12
 BuildRequires:	meson >= 0.64.0
