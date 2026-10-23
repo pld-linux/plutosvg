@@ -1,0 +1,10 @@
+--- plutosvg-0.0.8/CMakeLists.txt~	2026-05-18 07:10:06.000000000 +0200
++++ plutosvg-0.0.8/CMakeLists.txt	2026-10-23 23:59:03.593067520 +0200
+@@ -27,6 +27,7 @@
+ 
+ set_target_properties(plutosvg PROPERTIES
+     SOVERSION ${PLUTOSVG_VERSION_MAJOR}
++    VERSION ${PROJECT_VERSION}
+     C_VISIBILITY_PRESET hidden
+     C_STANDARD_REQUIRED ON
+     C_STANDARD 99

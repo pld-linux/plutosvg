@@ -1,26 +1,23 @@
-#
-# Conditional build:
-%bcond_without	static_libs	# static libraries
-#
 Summary:	PlutoSVG - tiny SVG rendering library
 Summary(pl.UTF-8):	PlutoSVG - mała biblioteka do renderowania SVG
 Name:		plutosvg
 Version:	0.0.8
-Release:	1
+Release:	2
 License:	MIT
 Group:		Libraries
 #Source0Download: https://github.com/sammycage/plutosvg/releases
 Source0:	https://github.com/sammycage/plutosvg/archive/v%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	914d84a58c80343f51fbc4968a5710ee
+Patch0:		lib-version.patch
 URL:		https://github.com/sammycage/plutosvg
 BuildRequires:	freetype-devel >= 1:2.12
 BuildRequires:	meson >= 0.64.0
 BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig
-BuildRequires:	plutovg-devel >= 0.0.4
+BuildRequires:	plutovg-devel >= 1.3.3-2
 BuildRequires:	rpmbuild(macros) >= 2.042
 Requires:	freetype >= 1:2.12
-Requires:	plutovg >= 0.0.4
+Requires:	plutovg >= 1.3.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -43,7 +40,8 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki PlutoSVG
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	freetype-devel >= 1:2.12
-Requires:	plutovg-devel >= 0.0.4
+Requires:	plutovg-devel >= 1.3.3
+Obsoletes:	plutosvg-static < 0.0.8-2
 
 %description devel
 Header files for PlutoSVG library.
@@ -51,34 +49,21 @@ Header files for PlutoSVG library.
 %description devel -l pl.UTF-8
 Pliki nagłówkowe biblioteki PlutoSVG.
 
-%package static
-Summary:	Static PlutoSVG library
-Summary(pl.UTF-8):	Statyczna biblioteka PlutoSVG
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static PlutoSVG library.
-
-%description static -l pl.UTF-8
-Statyczna biblioteka PlutoSVG.
-
 %prep
 %setup -q
+%patch -P0 -p1
 
-%build
-%meson \
-	%{!?with_static_libs:--default-library=shared} \
-	-Dexamples=enabled \
-	-Dfreetype=enabled \
-	-Dtests=disabled
+%cmake -B build \
+	-G Ninja \
+	-DPLUTOSVG_ENABLE_FREETYPE:BOOL=ON \
+	-DPLUTOSVG_BUILD_EXAMPLES:BOOL=ON
 
-%meson_build
+%ninja_build -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%meson_install
+%ninja_install -C build
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -89,7 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc LICENSE README.md
-%attr(755,root,root) %{_libdir}/libplutosvg.so.*.*.*
+%{_libdir}/libplutosvg.so.*.*.*
 %ghost %{_libdir}/libplutosvg.so.0
 
 %files devel
@@ -97,9 +82,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libplutosvg.so
 %{_includedir}/plutosvg
 %{_pkgconfigdir}/plutosvg.pc
-
-%if %{with static_libs}
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/libplutosvg.a
-%endif
+%{_libdir}/cmake/plutosvg
